@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: QuizApp
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: root
+    url: jdbc:postgresql://localhost:5432/quizDB
+    username: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+profile:
+  pic:
+    location: ./src/main/resources/static/img/avatars/profile-pics/

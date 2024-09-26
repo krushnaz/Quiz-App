@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Quiz Management Page">
+<meta name="author" content="YourName">
+<title>Quiz Management</title>
+
+<!-- Bootstrap CSS -->
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Custom CSS -->
+<link href="/css/app.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+	rel="stylesheet">
+<!-- jQuery Full Version -->
+
+<style>
+.sidebar {
+	height: 100vh;
+	background-color: #f8f9fa;
+}
+
+.quiz-management {
+	margin-top: 20px;
+}
+
+.quiz-table th, .quiz-table td {
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+	<div class="wrapper d-flex">
+
+		<!-- Sidebar -->
+		<nav id="sidebar" class="sidebar js-sidebar">
+			<div class="sidebar-content js-simplebar">
+				<a class="sidebar-brand" href="#"> <span class="align-middle">Admin</span></a>
+				<ul class="sidebar-nav">
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/adminDashboard"> <i class="align-middle"
+							data-feather="sliders"></i> <span class="align-middle">Dashboard</span></a></li>
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/adminProfile"> <i class="align-middle"
+							data-feather="user"></i> <span class="align-middle">Profile</span></a></li>
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/manageUser"> <i class="align-middle"
+							data-feather="log-in"></i> <span class="align-middle">User
+								Management</span></a></li>
+					<li class="sidebar-item active"><a class="sidebar-link"
+						href="/quiz/manage"> <i class="align-middle"
+							data-feather="user-plus"></i> <span class="align-middle">Quiz
+								Management</span></a></li>
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/logout"> <i class="align-middle"
+							data-feather="user-plus"></i> <span class="align-middle">
+								Logout</span>
+					</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- Main Content -->
+		<div class="main flex-grow-1">
+			<main>
+				<div class="container">
+
+					<div th:if="${message}" class="alert alert-success" role="alert">
+						<span th:text="${message}"></span>
+					</div>
+					<!-- Existing content -->
+
+					<!-- Quiz Management -->
+					<div class="quiz-management">
+						<h2>Quiz Management</h2>
+
+						<!-- Create Quiz Button -->
+						<div class="text-right mb-3">
+							<button class="btn btn-success" data-toggle="modal"
+								data-target="#createQuizModal">Create Quiz</button>
+						</div>
+
+						<!-- Include this in your manageQuiz.html -->
+						<table class="table">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Title</th>
+									<th>Description</th>
+									<th>Created Date</th>
+									<th>Start Date</th>
+									<th>End Date</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Display the quiz only if it is not empty -->
+								<tr th:if="${#lists.isEmpty(quizzes)}">
+									<td colspan="5" class="text-center">No quizzes available</td>
+								</tr>
+
+								<!-- Iterate over quizzes if not empty -->
+								<tr th:each="quiz : ${quizzes}"
+									th:if="${!#lists.isEmpty(quizzes)}">
+									<td th:text="${quiz.id}">1</td>
+									<td th:text="${quiz.title}">Title</td>
+									<td th:text="${quiz.description}">Description</td>
+									<td th:text="${quiz.date}">Date</td>
+									<td th:text="${quiz.startDate}">Date</td>
+									<td th:text="${quiz.endDate}">Date</td>
+									<td>
+										<button class="btn btn-primary" data-toggle="modal"
+											data-target="#addQuestionModal" th:data-quiz-id="${quiz.id}">Add
+											Question</button> <!-- Edit Button -->
+										<button class="btn btn-primary" data-toggle="modal"
+											data-target="#editQuizModal" th:data-id="${quiz.id}"
+											th:data-title="${quiz.title}"
+											th:data-description="${quiz.description}"
+											th:data-date="${quiz.date}">Edit Quiz</button> <!-- Button to open the modal -->
+										<button type="button" class="btn btn-primary"
+											data-toggle="modal" data-target="#editQuestionsModal"
+											th:data-id="${quiz.id}">Edit Questions</button> <!-- Delete Button -->
+										<button class="btn btn-danger" data-toggle="modal"
+											data-target="#deleteQuizModal" th:data-id="${quiz.id}">Delete</button>
+									</td>
+
+								</tr>
+							</tbody>
+
+						</table>
+					</div>
+				</div>
+			</main>
+
+			<!-- Create Quiz Modal -->
+			<div class="modal fade" id="createQuizModal" tabindex="-1"
+				role="dialog" aria-labelledby="createQuizModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="createQuizModalLabel">Create
+								Quiz</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form id="createQuizForm" th:action="@{/quiz/create}"
+								method="post">
+								<!-- Quiz Details -->
+								<div class="form-group">
+									<label for="quizTitle">Title</label> <input type="text"
+										class="form-control" id="quizTitle" name="title" required>
+								</div>
+								<div class="form-group">
+									<label for="quizDescription">Description</label>
+									<textarea class="form-control" id="quizDescription"
+										name="description" rows="3" required></textarea>
+								</div>
+								<div class="form-group">
+									<label for="quizDate">Date</label> <input type="date"
+										class="form-control" id="quizDate" name="date" required>
+								</div>
+								<div class="form-group">
+									<label for="quizDate">Start Date</label> <input type="date"
+										class="form-control" id="quizDate" name="startDate" required>
+								</div>
+								<div class="form-group">
+									<label for="quizDate">End Date</label> <input type="date"
+										class="form-control" id="quizDate" name="endDate" required>
+								</div>
+								<div class="form-group">
+									<label for="time">Duration</label> <input type="number"
+										class="form-control" id="time" name="duration" required>
+								</div>
+								<button type="submit" class="btn btn-primary">Create
+									Quiz</button>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Add Question Modal -->
+			<div class="modal fade" id="addQuestionModal" tabindex="-1"
+				role="dialog" aria-labelledby="addQuestionModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addQuestionModalLabel">Add
+								Question</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form id="addQuestionForm" method="post"
+								th:action="@{/question/addQuestion}">
+
+								<input type="hidden" id="quizId" name="quizId"
+									th:value="${quizId}">
+								<div class="form-group">
+									<label for="questionText">Question</label> <input type="text"
+										class="form-control" id="questionText" name="questionText"
+										required>
+								</div>
+								<div class="form-group">
+									<label for="option1">Option 1</label> <input type="text"
+										class="form-control" id="option1" name="option1" required>
+								</div>
+								<div class="form-group">
+									<label for="option2">Option 2</label> <input type="text"
+										class="form-control" id="option2" name="option2" required>
+								</div>
+								<div class="form-group">
+									<label for="option3">Option 3</label> <input type="text"
+										class="form-control" id="option3" name="option3" required>
+								</div>
+								<div class="form-group">
+									<label for="option4">Option 4</label> <input type="text"
+										class="form-control" id="option4" name="option4" required>
+								</div>
+								<div class="form-group">
+									<label for="correctAnswer">Correct Answer</label> <select
+										class="form-control" id="correctAnswer" name="correctAnswer"
+										required>
+										<!-- Replace these options with your actual options -->
+										<option value="" disabled selected>Select Correct
+											Answer</option>
+										<option value="option1">Option 1</option>
+										<option value="option2">Option 2</option>
+										<option value="option3">Option 3</option>
+										<option value="option4">Option 4</option>
+									</select>
+								</div>
+
+								<button type="submit" class="btn btn-primary">Add
+									Question</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Edit Questions Modal -->
+			<!-- Modal -->
+			<div class="modal fade" id="editQuestionsModal" tabindex="-1"
+				role="dialog" aria-labelledby="editQuestionsModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="editQuestionsModalLabel">Edit
+								Questions</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div th:each="quiz : ${quizzes}"
+							th:if="${!#lists.isEmpty(quizzes)}" class="modal-body">
+							<h1>
+								Manage Quiz: <span th:text="${quiz.title}">Quiz Title</span>
+							</h1>
+
+							<div th:if="${!#lists.isEmpty(questions)}">
+								<div th:each="question : ${questions}">
+									<p th:text="${question.questionText}">Question text</p>
+									<!-- Add more details and management options for each question here -->
+								</div>
+							</div>
+
+							<div th:if="${#lists.isEmpty(questions)}">
+								<p>No questions available for this quiz.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Edit Quiz Modal -->
+			<div class="modal fade" id="editQuizModal" tabindex="-1"
+				role="dialog" aria-labelledby="editQuizModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="editQuizModalLabel">Edit Quiz</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div th:each="quiz : ${allQuiz}"
+							th:if="${!#lists.isEmpty(allQuiz)}" class="modal-body">
+							<form id="editQuizForm" method="post" action="/quiz/update">
+								<!-- Hidden input for quiz ID -->
+
+								<input type="hidden" name="id" th:value="${quiz.id}">
+
+								<!-- Title field -->
+								<div class="form-group">
+									<label for="title">Title</label> <input type="text"
+										class="form-control" id="title" name="title"
+										th:value="${quiz.title}" required>
+								</div>
+
+								<!-- Description field -->
+								<div class="form-group">
+									<label for="description">Description</label>
+									<textarea class="form-control" id="description"
+										name="description" required th:text="${quiz.description}"></textarea>
+								</div>
+
+								<!-- Date field -->
+								<div class="form-group">
+									<label for="date">Date</label> <input type="date"
+										class="form-control" id="date" name="date"
+										th:value="${quiz.date}" required>
+								</div>
+
+
+
+								<button type="submit" class="btn btn-primary">Update
+									Quiz</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Delete Quiz Modal -->
+			<div class="modal fade" id="deleteQuizModal" tabindex="-1"
+				role="dialog" aria-labelledby="deleteQuizModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="deleteQuizModalLabel">Delete
+								Quiz</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">Are you sure you want to delete this
+							quiz?</div>
+						<div class="modal-footer">
+							<form th:action="@{/quiz/delete}" method="post">
+								<input type="hidden" id="deleteQuizId" name="id">
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Cancel</button>
+								<button type="submit" class="btn btn-danger">Delete</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+			<!-- Bootstrap JS -->
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<!-- Bootstrap JavaScript -->
+
+			<script
+				src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+			<script
+				src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+			<!-- Custom JS -->
+			<script>
+				$('#addQuestionModal').on(
+						'show.bs.modal',
+						function(event) {
+							var button = $(event.relatedTarget);
+							var quizId = parseInt(button.data('quiz-id'), 10); // Ensure quizId is treated as a number
+
+							console.log('Button data-quiz-id:', button
+									.data('quiz-id')); // Log the data-quiz-id value
+							console.log('Parsed quizId:', quizId); // Log the parsed quizId
+
+							var modal = $(this);
+							modal.find('#quizId').val(quizId); // Set the value correctly
+
+							console.log('Modal quizId input value:', modal
+									.find('#quizId').val()); // Log the value set in the hidden input
+						});
+
+				$('#editQuizModal').on('show.bs.modal', function(event) {
+					var button = $(event.relatedTarget);
+
+					var quizId = button.data('id');
+					var quizTitle = button.data('title');
+					var quizDescription = button.data('description');
+					var quizDate = button.data('date');
+
+					console.log('Button data-id:', quizId); // Ensure this is not undefined
+					console.log('Button data-title:', quizTitle);
+					console.log('Button data-description:', quizDescription);
+					console.log('Button data-date:', quizDate);
+
+					var modal = $(this);
+					modal.find('#editQuizTitle').val(quizTitle);
+					modal.find('#editQuizDescription').val(quizDescription);
+					modal.find('#editQuizDate').val(quizDate);
+
+					// Clear the questions container
+					var questionsContainer = modal.find('#questionsContainer');
+					questionsContainer.empty();
+				});
+
+				$('#editQuestionsModal').on('show.bs.modal', function(event) {
+					var button = $(event.relatedTarget); // Button that triggered the modal
+					var quizId = button.data('id'); // Extract quiz ID from data-id attribute
+
+					// Debugging lines
+					console.log('Button data-id:', quizId); // Log the extracted quiz ID
+					console.log('Modal opening');
+
+					// Set the quiz ID in the hidden input field in the modal
+					var modal = $(this);
+					modal.find('#quizId').val(quizId);
+				});
+				// JavaScript to set the quiz ID in the modal's hidden input
+				$('#deleteQuizModal').on('show.bs.modal', function(event) {
+					var button = $(event.relatedTarget); // Button that triggered the modal
+					var quizId = button.data('id');
+					console.log("id : ", quizId);// Extract quiz ID from data-id attribute
+					var modal = $(this);
+					modal.find('#deleteQuizId').val(quizId); // Set the quiz ID in the hidden input field
+				});
+			</script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description"
+	content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+<meta name="author" content="AdminKit">
+<meta name="keywords"
+	content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<link rel="canonical" href="https://demo-basic.adminkit.io/" />
+<style type="text/css">
+.flash-message {
+	transition: opacity 0.5s ease-out;
+}
+
+.flash-message.hidden {
+	opacity: 0;
+	display: none;
+}
+
+.completed-class {
+	color: green;
+}
+
+.btn.disabled {
+	pointer-events: none;
+	opacity: 0.6;
+}
+
+.not-completed-class {
+	color: red;
+}
+</style>
+<title>App</title>
+
+<link href="/css/app.css" rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+	rel="stylesheet">
+</head>
+
+<body>
+	<div class="wrapper">
+		<nav id="sidebar" class="sidebar js-sidebar">
+			<div class="sidebar-content js-simplebar">
+				<a class="sidebar-brand" href="index.html"> <span
+					class="align-middle">Quiz App</span>
+				</a>
+
+				<ul class="sidebar-nav">
+					<li class="sidebar-header">Pages</li>
+
+					<li class="sidebar-item active"><a class="sidebar-link"
+						href="/userDashboard"> <i class="align-middle"
+							data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+					</a></li>
+
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/userProfile"> <i class="align-middle"
+							data-feather="user"></i> <span class="align-middle">Profile</span>
+					</a></li>
+
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/quizzes"> <i class="align-middle" data-feather="log-in"></i>
+							<span class="align-middle">Attend Quiz</span>
+					</a></li>
+
+					<li class="sidebar-item"><a class="sidebar-link"
+						href="/result"> <i class="align-middle"
+							data-feather="user-plus"></i> <span class="align-middle">See
+								Result</span>
+					</a></li>
+
+					<li class="sidebar-item"><a class="sidebar-link" href="logout">
+							<i class="align-middle" data-feather="user-plus"></i> <span
+							class="align-middle"> Logout</span>
+					</a></li>
+				</ul>
+			</div>
+		</nav>
+
+
+		<div class="main">
+			<nav class="navbar navbar-expand navbar-light navbar-bg">
+				<a class="sidebar-toggle js-sidebar-toggle"> <i
+					class="hamburger align-self-center"></i>
+				</a>
+
+				<div class="navbar-collapse collapse">
+					<ul class="navbar-nav navbar-align">
+						<li class="nav-item dropdown"><a
+							class="nav-icon dropdown-toggle" href="#" id="alertsDropdown"
+							data-bs-toggle="dropdown">
+								<div class="position-relative">
+									<i class="align-middle" data-feather="bell"></i> <span
+										class="indicator">4</span>
+								</div>
+						</a>
+							<div
+								class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
+								aria-labelledby="alertsDropdown">
+								<div class="dropdown-menu-header">4 New Notifications</div>
+								<div class="list-group">
+									<a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<i class="text-danger" data-feather="alert-circle"></i>
+											</div>
+											<div class="col-10">
+												<div class="text-dark">Update completed</div>
+												<div class="text-muted small mt-1">Restart server 12
+													to complete the update.</div>
+												<div class="text-muted small mt-1">30m ago</div>
+											</div>
+										</div>
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<i class="text-warning" data-feather="bell"></i>
+											</div>
+											<div class="col-10">
+												<div class="text-dark">Lorem ipsum</div>
+												<div class="text-muted small mt-1">Aliquam ex eros,
+													imperdiet vulputate hendrerit et.</div>
+												<div class="text-muted small mt-1">2h ago</div>
+											</div>
+										</div>
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<i class="text-primary" data-feather="home"></i>
+											</div>
+											<div class="col-10">
+												<div class="text-dark">Login from 192.186.1.8</div>
+												<div class="text-muted small mt-1">5h ago</div>
+											</div>
+										</div>
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<i class="text-success" data-feather="user-plus"></i>
+											</div>
+											<div class="col-10">
+												<div class="text-dark">New connection</div>
+												<div class="text-muted small mt-1">Christina accepted
+													your request.</div>
+												<div class="text-muted small mt-1">14h ago</div>
+											</div>
+										</div>
+									</a>
+								</div>
+								<div class="dropdown-menu-footer">
+									<a href="#" class="text-muted">Show all notifications</a>
+								</div>
+							</div></li>
+						<li class="nav-item dropdown"><a
+							class="nav-icon dropdown-toggle" href="#" id="messagesDropdown"
+							data-bs-toggle="dropdown">
+								<div class="position-relative">
+									<i class="align-middle" data-feather="message-square"></i>
+								</div>
+						</a>
+							<div
+								class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
+								aria-labelledby="messagesDropdown">
+								<div class="dropdown-menu-header">
+									<div class="position-relative">4 New Messages</div>
+								</div>
+								<div class="list-group">
+									<a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<img src="img/avatars/avatar-5.jpg"
+													class="avatar img-fluid rounded-circle"
+													alt="Vanessa Tucker">
+											</div>
+											<div class="col-10 ps-2">
+												<div class="text-dark">Vanessa Tucker</div>
+												<div class="text-muted small mt-1">Nam pretium turpis
+													et arcu. Duis arcu tortor.</div>
+												<div class="text-muted small mt-1">15m ago</div>
+											</div>
+										</div>
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<img src="img/avatars/avatar-2.jpg"
+													class="avatar img-fluid rounded-circle"
+													alt="William Harris">
+											</div>
+											<div class="col-10 ps-2">
+												<div class="text-dark">William Harris</div>
+												<div class="text-muted small mt-1">Curabitur ligula
+													sapien euismod vitae.</div>
+												<div class="text-muted small mt-1">2h ago</div>
+											</div>
+										</div>
+
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<img src="img/avatars/avatar-4.jpg"
+													class="avatar img-fluid rounded-circle"
+													alt="Christina Mason">
+											</div>
+
+											<div class="col-10 ps-2">
+												<div class="text-dark">Christina Mason</div>
+												<div class="text-muted small mt-1">Pellentesque auctor
+													neque nec urna.</div>
+												<div class="text-muted small mt-1">4h ago</div>
+											</div>
+										</div>
+									</a> <a href="#" class="list-group-item">
+										<div class="row g-0 align-items-center">
+											<div class="col-2">
+												<img src="img/avatars/avatar-3.jpg"
+													class="avatar img-fluid rounded-circle"
+													alt="Sharon Lessman">
+											</div>
+											<div class="col-10 ps-2">
+												<div class="text-dark">Sharon Lessman</div>
+												<div class="text-muted small mt-1">Aenean tellus
+													metus, bibendum sed, posuere ac, mattis non.</div>
+												<div class="text-muted small mt-1">5h ago</div>
+											</div>
+										</div>
+									</a>
+								</div>
+								<div class="dropdown-menu-footer">
+									<a href="#" class="text-muted">Show all messages</a>
+								</div>
+							</div></li>
+						<li class="nav-item dropdown"><a
+							class="nav-icon dropdown-toggle d-inline-block d-sm-none"
+							href="#" data-bs-toggle="dropdown"> <i class="align-middle"
+								data-feather="settings"></i>
+						</a> <a class="nav-link dropdown-toggle d-none d-sm-inline-block"
+							href="#" data-bs-toggle="dropdown"> <img
+								src="img/avatars/avatar.jpg"
+								class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span
+								class="text-dark">Charles Hall</span>
+						</a>
+							<div class="dropdown-menu dropdown-menu-end">
+								<a class="dropdown-item" href="pages-profile.html"><i
+									class="align-middle me-1" data-feather="user"></i> Profile</a> <a
+									class="dropdown-item" href="#"><i class="align-middle me-1"
+									data-feather="pie-chart"></i> Analytics</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="index.html"><i
+									class="align-middle me-1" data-feather="settings"></i> Settings
+									& Privacy</a> <a class="dropdown-item" href="#"><i
+									class="align-middle me-1" data-feather="help-circle"></i> Help
+									Center</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Log out</a>
+							</div></li>
+					</ul>
+				</div>
+			</nav>
+
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div th:if="${successMessage}"
+						class="alert alert-success flash-message" role="alert">
+						<p th:text="${successMessage}"></p>
+					</div>
+					<div th:if="${errorMessage}"
+						class="alert alert-danger flash-message" role="alert">
+						<p th:text="${errorMessage}"></p>
+					</div>
+
+					<h1 class="h3 mb-3">
+						<strong>Quizzes</strong> Dashboard
+					</h1>
+
+
+
+					<!--  -->
+					<div class="row">
+						<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
+							<div class="card flex-fill w-100"></div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-12 col-lg-8 col-xxl-12 d-flex">
+								<div class="card flex-fill">
+
+									<table class="table table-hover my-0">
+										<thead>
+											<tr>
+												<th>Quiz ID</th>
+												<th>Quiz Name</th>
+												<th class="d-none d-xl-table-cell">Start Date</th>
+												<th class="d-none d-xl-table-cell">End Date</th>
+												<th>Status</th>
+												<th class="d-none d-md-table-cell">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<!-- Display message if no quizzes are available -->
+											<tr th:if="${#lists.isEmpty(quizzes)}">
+												<td colspan="6" class="text-center">No quizzes
+													available</td>
+											</tr>
+
+											<!-- Iterate over quizzes if not empty -->
+											<tr th:each="quiz : ${quizzes}"
+												th:if="${!#lists.isEmpty(quizzes)}">
+												<td th:text="${quiz.id}">1</td>
+												<td th:text="${quiz.title}">Title</td>
+												<td class="d-none d-xl-table-cell"
+													th:text="${quiz.startDate}">01/01/2023</td>
+												<td class="d-none d-xl-table-cell" th:text="${quiz.endDate}">31/06/2023</td>
+
+												<!-- Show quiz completion status -->
+												<td><span th:if="${quizCompletionStatus[quiz.id]}"
+													class="badge bg-success">Completed</span> <span
+													th:if="${!quizCompletionStatus[quiz.id]}"
+													class="badge bg-warning">Not Completed</span></td>
+
+												<!-- Action button to start quiz -->
+												<td class="d-none d-md-table-cell">
+													<button type="button" class="btn btn-primary"
+														th:data-quiz-id="${quiz.id}"
+														th:classappend="${quizCompletionStatus[quiz.id]} ? 'disabled' : ''"
+														th:data-toggle="modal"
+														th:data-target="'#quizModal' + ${quiz.id}"
+														th:disabled="${quizCompletionStatus[quiz.id]}">Start
+														Quiz</button>
+												</td>
+
+
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+
+				<!-- Modal Structure -->
+				<div th:each="quiz : ${quizzes}">
+					<div th:id="'quizModal' + ${quiz.id}" class="modal fade"
+						tabindex="-1" role="dialog" aria-labelledby="quizModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" th:text="${quiz.title}">Quiz Title</h5>
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p th:text="'Description: ' + ${quiz.description}">Description</p>
+									<p th:text="'Start Date: ' + ${quiz.startDate}">Start Date</p>
+									<p th:text="'End Date: ' + ${quiz.endDate}">End Date</p>
+									<p th:text="'Time: ' + ${quiz.duration} + ' minutes'">Time</p>
+									<p id="quizStatus${quiz.id}">Loading...</p>
+								</div>
+								<div class="modal-footer">
+									<div>
+										<button id="requestCameraBtn" class="btn btn-primary">Grant Camera Access</button>
+									</div>
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">No</button>
+									<a th:href="@{/quiz/{id}(id=${quiz.id})}"
+										class="btn btn-primary">Yes</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</main>
+
+
+
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-start">
+							<p class="mb-0">
+								<a class="text-muted" href="https://adminkit.io/"
+									target="_blank"><strong>Quiz App</strong></a> - <a
+									class="text-muted" href="https://adminkit.io/" target="_blank"><strong>Quiz
+										App</strong></a> &copy;
+							</p>
+						</div>
+						<div class="col-6 text-end">
+							<ul class="list-inline">
+								<li class="list-inline-item"><a class="text-muted"
+									href="https://adminkit.io/" target="_blank">Support</a></li>
+								<li class="list-inline-item"><a class="text-muted"
+									href="https://adminkit.io/" target="_blank">Help Center</a></li>
+								<li class="list-inline-item"><a class="text-muted"
+									href="https://adminkit.io/" target="_blank">Privacy</a></li>
+								<li class="list-inline-item"><a class="text-muted"
+									href="https://adminkit.io/" target="_blank">Terms</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="js/app.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<script>
+		$(document).ready(
+				function() {
+					$('.btn-primary').click(function() {
+						let quizId = $(this).data('quiz-id'); // Retrieve the quiz ID from data attribute
+						console.log('Quiz ID:', quizId); // Log the quiz ID for debugging
+
+						if (quizId) {
+							checkQuizCompletion(quizId);
+						} else {
+							console.error('Quiz ID is not set.');
+						}
+					});
+
+					function checkQuizCompletion(quizId) {
+						$.ajax({
+							url : 'http://localhost:8081/quiz/quizStatus',
+							type : 'GET',
+							data : {
+								quizId : quizId
+							},
+							success : function(response) {
+								if (response.completed) {
+									$('#quizStatus').text('Completed')
+											.addClass('completed-class');
+								} else {
+									$('#quizStatus').text('Not Completed')
+											.addClass('not-completed-class');
+								}
+							},
+							error : function(xhr, status, error) {
+								console.error('AJAX Error: ', status, error);
+							}
+						});
+					}
+				});
+		document.addEventListener('DOMContentLoaded', function() {
+			// Select all flash messages
+			const flashMessages = document.querySelectorAll('.flash-message');
+
+			// Hide flash messages after 2 seconds
+			flashMessages.forEach(function(message) {
+				setTimeout(function() {
+					message.classList.add('hidden');
+				}, 2000); // 2000 milliseconds = 2 seconds
+			});
+		});
+		
+		 const requestCameraBtn = document.getElementById('requestCameraBtn');
+
+	        requestCameraBtn.addEventListener('click', async () => {
+	            try {
+	                // Request camera access
+	                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+	                
+	                // Store permission status in sessionStorage
+	                sessionStorage.setItem('cameraPermission', 'granted');
+	                
+	                // Redirect to the second page
+	               
+	            } catch (error) {
+	                console.error('Error accessing the camera:', error);
+	                alert('Unable to access camera. Please allow camera access.');
+	            }
+	        });
+	</script>
+
+</body>
+
+</html>

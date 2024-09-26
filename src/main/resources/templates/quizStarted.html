@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Quiz</title>
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+.question-container {
+	display: none;
+}
+
+.question-container.active {
+	display: block;
+}
+
+.question-link {
+	width: 100%;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	text-align: center;
+	font-size: 14px;
+	margin-bottom: 5px;
+	background-color: #f8f9fa;
+	transition: background-color 0.3s ease;
+}
+
+.question-link.active {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.question-link.not-attempted {
+	background-color: #dc3545; /* Red for not attempted */
+	color: #fff;
+}
+
+.question-link.attempted {
+	background-color: #28a745; /* Green for attempted */
+	color: #fff;
+}
+
+.timer-container {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	background-color: rgba(0, 0, 0, 0.7);
+	color: #fff;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.flash-message {
+	position: fixed;
+	top: 50px;
+	left: 10px;
+	background-color: #dc3545; /* Red background */
+	color: #fff;
+	padding: 10px;
+	border-radius: 5px;
+	display: none;
+	z-index: 1000; /* Ensure it appears on top */
+}
+
+#cameraContainer {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	width: 200px;
+	height: 150px;
+	display: none;
+	z-index: 1000; /* Ensure it appears above other elements */
+	background-color: rgba(0, 0, 0, 0.7);
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#videoElement {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+}
+</style>
+</head>
+<body>
+	<div id="cameraContainer">
+		<h6 style="color: white; text-align: center;"></h6>
+		<video id="videoElement" autoplay></video>
+	</div>
+	<div class="container mt-5">
+		<!-- Timer -->
+		<!-- Timer -->
+		<div class="timer-container">
+			<h5>
+				Time Left: <span id="timer"></span>
+			</h5>
+		</div>
+
+		<!-- Flash Message -->
+		<div id="flashMessage" class="flash-message">Less than 5 minutes
+			left!</div>
+
+
+		<!-- Error Handling -->
+		<div th:if="${errorMessage}" class="alert alert-danger">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+		<!-- Quiz Details -->
+		<div th:if="${quiz}">
+			<h1 th:text="${quiz.title}">Quiz Title</h1>
+			<p th:text="${quiz.description}">Quiz Description</p>
+			<div class="row">
+				<!-- Side Panel for Question Navigation -->
+				<div class="col-md-3">
+					<div class="row">
+						<div class="col-12">
+							<div class="list-group">
+								<div class="row">
+									<div th:each="question, stat : ${questions}" class="col-4 mb-2">
+										<a th:id="'question-link-' + ${stat.index}"
+											th:data-index="${stat.index}"
+											class="list-group-item question-link"
+											th:text="${stat.index + 1}"></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="cameraContainer" style="display: none;">
+					<h3>Camera Feed:</h3>
+					<video id="videoElement" autoplay
+						style="width: 100%; height: auto;"></video>
+				</div>
+				<!-- Main Quiz Content -->
+				<div class="col-md-9">
+					<form id="quizForm" method="post" th:action="@{/quiz/submitQuiz}">
+						<input type="hidden" name="quizId" th:value="${quiz.id}" />
+
+						<!-- Iterate over questions -->
+						<div th:each="question, stat : ${questions}"
+							th:id="'question-' + ${stat.index}" class="question-container"
+							th:classappend="${stat.index == 0} ? 'active'">
+							<h3 th:text="${question.questionText}">Question</h3>
+							<div th:each="option : ${question.options}">
+								<input type="radio"
+									th:name="'userAnswers[' + ${question.id} + ']'"
+									th:value="${option}" class="answer-option" /> <label
+									th:text="${option}"></label>
+							</div>
+
+							<!-- Navigation Buttons -->
+							<div class="d-flex justify-content-between mt-4">
+								<button type="button" th:if="${stat.index > 0}"
+									class="btn btn-secondary prevBtn">Previous</button>
+								<button type="button"
+									th:if="${stat.index < questions.size() - 1}"
+									class="btn btn-primary nextBtn">Next</button>
+								<button type="submit"
+									th:if="${stat.index == questions.size() - 1}"
+									class="btn btn-success">Submit Quiz</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Success Modal -->
+	<div class="modal fade" id="successModal" tabindex="-1" role="dialog"
+		aria-labelledby="successModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="successModalLabel">Success</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">Your quiz has been submitted
+					successfully!</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						id="redirectToQuizzes">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script>
+        $(document).ready(function() {
+            let currentQuestion = 0;
+            const totalQuestions = $('.question-container').length;
+            const selectedOptions = {};
+
+            // Ensure the first question is shown
+            function showQuestion(index) {
+                $('.question-container').removeClass('active');
+                $(`#question-${index}`).addClass('active');
+                $('.question-link').removeClass('active');
+                $(`.question-link[data-index="${index}"]`).addClass('active');
+                updateNavigation();
+            }
+
+            function updateNavigation() {
+                $('.question-link').each(function() {
+                    const index = $(this).data('index');
+                    if (selectedOptions[index]) {
+                        $(this).removeClass('not-attempted').addClass('attempted');
+                    } else {
+                        $(this).removeClass('attempted').addClass('not-attempted');
+                    }
+                });
+            }
+
+            showQuestion(currentQuestion);
+
+            $('.nextBtn').click(function() {
+                if (currentQuestion < totalQuestions - 1) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                }
+            });
+
+            $('.prevBtn').click(function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
+
+            $('.question-link').click(function(e) {
+                e.preventDefault();
+                const index = $(this).data('index');
+                currentQuestion = index;
+                showQuestion(index);
+            });
+
+            // Update selected options on change
+            $(document).on('change', '.answer-option', function() {
+                const questionIndex = $(this).closest('.question-container').attr('id').split('-')[1];
+                selectedOptions[questionIndex] = true;
+                updateNavigation();
+            });
+
+            // Timer logic
+            function initializeTimer() {
+                let timeLeft = localStorage.getItem('quizTimer');
+
+                if (!timeLeft || timeLeft <= 0) {
+                    timeLeft = [[${quiz.duration}]] * 60; // Convert quiz duration to seconds
+                    localStorage.setItem('quizTimer', timeLeft);
+                }
+
+                return timeLeft;
+            }
+
+            let timeLeft = initializeTimer(); // Initialize the timer
+
+            const timerInterval = setInterval(function() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                $('#timer').text(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+                timeLeft--;
+
+                localStorage.setItem('quizTimer', timeLeft);
+
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                    $('#quizForm').submit(); // Automatically submit the form when time is up
+                } else if (timeLeft <= 300 && !$('#flashMessage').is(':visible')) { // 5 minutes = 300 seconds
+                    $('#flashMessage').fadeIn(); // Show flash message
+                }
+            }, 1000);
+
+            // Show the success modal if the flag is set
+            var showSuccessModal = [[${showSuccessModal}]] + "";
+
+            if (showSuccessModal) {
+                $('#successModal').modal('show');
+            }
+
+            // Redirect to the quizzes page when the "OK" button is clicked
+            $('#redirectToQuizzes').on('click', function() {
+                window.location.href = '/quizzes'; // Redirect to the quizzes page
+            });
+        });
+        
+        // Check if camera permission was granted
+        // Check if camera permission was granted
+const cameraPermission = sessionStorage.getItem('cameraPermission');
+
+if (cameraPermission === 'granted') {
+    const cameraContainer = document.getElementById('cameraContainer');
+    const videoElement = document.getElementById('videoElement');
+
+    // Request the camera feed again
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            // Display the video stream in the video element
+            videoElement.srcObject = stream;
+
+            // Show the camera container
+            cameraContainer.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error accessing the camera:', error);
+            alert('Unable to access camera. Please allow camera access.');
+        });
+} else {
+    alert('Camera permission was not granted. Please go back and grant access.');
+    window.location.href = 'quizzes.html';
+}
+
+    </script>
+</body>
+</html>
